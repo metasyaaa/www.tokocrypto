@@ -47,6 +47,7 @@
             animation: pulse 2s infinite;
         }
         
+    /* Style untuk notifikasi */
     .notification {
         position: fixed;
         top: 20px;
@@ -93,6 +94,7 @@
         }
     }
 
+    /* Animasi untuk tombol */
     .btn-loading {
         position: relative;
         overflow: hidden;
@@ -176,33 +178,42 @@
     </div>
 
     <script>
+  // Tombol kirim ulang
   document.getElementById('resendBtn').addEventListener('click', () => {
+    // Tampilkan loading state
     const btn = document.getElementById('resendBtn');
     const originalText = btn.innerHTML;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengirim...';
     btn.disabled = true;
     
+    // Simulasi pengiriman ulang
     setTimeout(() => {
+      // Tampilkan notifikasi custom (menggantikan alert)
       showNotification('Kode verifikasi baru telah dikirim ke email Anda!', 'success');
       
       btn.innerHTML = originalText;
       btn.disabled = false;
       
+      // Redirect kembali ke halaman OTP setelah 1.5 detik
       setTimeout(() => {
         window.location.href = "verifikasi-otp.html";
       }, 1500);
     }, 2000);
   });
   
+  // Tombol kembali ke login
   document.getElementById('backBtn').addEventListener('click', () => {
     window.location.href = "index.html";
   });
   
+  // Tombol close
   document.querySelector('button[aria-label="Close"]').addEventListener('click', () => {
     window.location.href = "index.html";
   });
   
+  // Fungsi untuk menampilkan notifikasi custom
   function showNotification(message, type = 'success') {
+    // Buat elemen notifikasi
     const notification = document.createElement('div');
     notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-x-full ${
             type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
@@ -215,13 +226,16 @@
             </div>
         `;
     
+    // Tambahkan ke body
     document.body.appendChild(notification);
     
+    // Animasi masuk
     setTimeout(() => {
       notification.classList.remove('translate-x-full');
       notification.classList.add('translate-x-0');
     }, 10);
     
+    // Animasi keluar setelah 3 detik
     setTimeout(() => {
       notification.classList.remove('translate-x-0');
       notification.classList.add('translate-x-full');
@@ -233,7 +247,10 @@
     }, 3000);
   }
   
+  // Kirim notifikasi email bahwa kode kedaluwarsa (opsional)
   setTimeout(() => {
+    // Anda bisa menambahkan pengiriman email notifikasi di sini
+    // menggunakan EmailJS jika diperlukan
   }, 1000);
 </script>
 </body>
